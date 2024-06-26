@@ -1,39 +1,39 @@
-// An Array Of Arrays
 
-import { useState } from 'react';
+
 const initialGameBoard  = [   
     [null, null, null],
     [null, null, null],
     [null, null, null],
 ];
 
-export default function GameBoard({onSelectSquare, activePlayerSymbol}){
-    const [gameBoard, setGameBoard] = useState(initialGameBoard);
+export default function GameBoard({onSelectSquare, turns }){
+     let gameBoard = initialGameBoard; 
 
-    function handleSelectSquare(rowIndex, colIndex) {
-        setGameBoard((prevGameBoard) => {
+     for (const turn of turns){
+         //  DESTRUCTURING THE TURNS
+         const { square, player} = turn;
+         const { row, col} = square;   // OBJECT DESTRUCTURING TWICE
 
-           // const updatedBoard = [...prevGameBoard];
-// since we need to copy our array in line 4 to 6  we can achieve that byb this method
-           const updatedBoard = [...prevGameBoard.map(innerArray => [innerArray])];
-            updatedBoard[rowIndex][colIndex] = activePlayerSymbol;
-            return updatedBoard;
-        });
-
-        //...prop
-        onSelectSquare();
-    }
-
-    return <ol id = "game-board">
-        {gameBoard.map((row, rowIndex) => 
-        <li key={rowIndex}>
+         gameBoard[row][col]  = player;  
+         // We dont need to manage any state here instead we are deriving state here from props
+         // In react you can manage as little states as needed and derive more values and information as you can
+     }
+ 
+    return( <ol id = "game-board">
+        {gameBoard.map((row, rowIndex) => (  //beginning of gameBoard.map
+        <li key={rowIndex}>      
             <ol>
-                {row.map((playerSymbol, colIndex) => 
+                {row.map((playerSymbol, colIndex) => (
                 <li key={colIndex}>
-                    <button onClick ={() =>handleSelectSquare(rowIndex, colIndex)}>{playerSymbol}</button>
-                </li>)}
-            </ol>
-        </li>)}
+                    <button onClick = {()=> onSelectSquare(rowIndex, colIndex)}> {playerSymbol}</button>   
+               </li>     
+                ))  // end of bracket from row.map and arrow function =>
+                }
+            </ol>   
+        </li>  // end of <li key={rowIndex}>
+    ))   //end of  gameBoard.map
+    }
    
-    </ol>;
-}
+    </ol>
+    );  // end of return
+}  
